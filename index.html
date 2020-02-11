@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title >todo Application</title>
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body style="font-family: AppleGothic; font-size: small">
+
+
+
+</div>
+
+<div id="onAllActions">
+	<button id="onAllActions__markAllAsTodo" onclick="todoFunctions.markAllTodo()"> Mark All ToDo</button>
+	<button id="onAllActions__markAllAsCompleted" onclick="todoFunctions.markAllCompleted()"> Mark All as Completed</button>
+	<button id ="onAllActions__clearAll" onclick ="todoFunctions.clearAll()">Clear All</button>
+</div>
+
+<div id="todoTasks">
+	<ul id="todoTasks__list"><li class="list__placeHolder"></li><li id="newTodo">
+		<span id = "newListItemPlus">&#43;</span>
+		<input type="text" id="newTodo__Input" autocomplete="off" placeholder="Add todo..." autofocus="autofocus">
+	</li></ul>
+</div>
+<!--<hr id = "taskListSeparator">-->
+<div id="completedTasks">
+	<ul id="completedTasks__list"><li class="list__placeHolder"></li></ul>
+</div>
+<script src="js/utils.js"></script>
+<script src='js/config.js'></script>
+<script src='js/main.js'></script>
+</body>
+</html>
