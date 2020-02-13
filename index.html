@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress HtmlFormInputWithoutLabel, CssNoGenericFontName -->
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -7,28 +8,29 @@
 </head>
 <body style="font-family: AppleGothic; font-size: small">
 
-
-
-</div>
+<h1 style = 'text-align: center'>ToDo Recorder</h1>
 
 <div id="onAllActions">
-	<button id="onAllActions__markAllAsTodo" onclick="todoFunctions.markAllTodo()"> Mark All ToDo</button>
-	<button id="onAllActions__markAllAsCompleted" onclick="todoFunctions.markAllCompleted()"> Mark All as Completed</button>
-	<button id ="onAllActions__clearAll" onclick ="todoFunctions.clearAll()">Clear All</button>
+	<button id="onAllActions__markAllAsCompleted"> Mark All as Completed</button>
+	<button id ="onAllActions__clearAll">Clear All</button>
 </div>
-
 <div id="todoTasks">
-	<ul id="todoTasks__list"><li class="list__placeHolder"></li><li id="newTodo">
+	<p id="todoTasks__noTasksMessage" style="opacity: 0;">No ToDo Tasks</p>
+	<ul id="todoTasks__list"><li class="list__placeHolder" id = "initial_Placeholder"></li><li id="newTodo">
 		<span id = "newListItemPlus">&#43;</span>
 		<input type="text" id="newTodo__Input" autocomplete="off" placeholder="Add todo..." autofocus="autofocus">
 	</li></ul>
 </div>
-<!--<hr id = "taskListSeparator">-->
+
 <div id="completedTasks">
+	<div>
+		<p class = "completedTasksListHead">&#x25BD Completed Tasks</p>
+		<button id="onAllActions__markAllAsTodo"> Mark All ToDo</button>
+	</div>
 	<ul id="completedTasks__list"><li class="list__placeHolder"></li></ul>
+	<p id="completedTasks__noTasksMessage" style="opacity: 0;">No Completed Tasks</p>
 </div>
 <script src="js/utils.js"></script>
-<script src='js/config.js'></script>
 <script src='js/main.js'></script>
 </body>
 </html>

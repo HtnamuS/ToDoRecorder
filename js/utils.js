@@ -1,4 +1,5 @@
-constants = {
+"use strict";
+let utils = {
 	todo : 'ToDo',
 	completed : 'Completed',
 	newTodoDivisionId: 'newTodo',
@@ -14,7 +15,7 @@ constants = {
 		noTodoTasksMessageId: 'todoTasks__noTasksMessage',
 		todoTaskListId: 'todoTasks__list',
 			todoTaskTextClass: 'todoTasks__list__element__text',
-
+	completedTasksListHeadClass: "completedTasksListHead",
 	completedTasksDivisionId: 'completedTasks',
 		noCompletedTasksMessageId: 'completedTasks__noTasksMessage',
 		completedTaskListId: 'completedTasks__list',
@@ -26,6 +27,7 @@ constants = {
 	checkButtonClass: 'checkTaskButton',
 	dragButtonClass: 'dragTaskButton',
 	placeHolderHrClass : 'placeHolderHr',
+	compressedListClass: "compressed",
 
 	setEndOfContenteditable: function setEndOfContenteditable(contentEditableElement) {
 		var range,selection;
@@ -45,5 +47,9 @@ constants = {
 			range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
 			range.select();//Select the range (make it the visible selection
 		}
-	}
+	},
+	arrowDown: String.fromCharCode(0x25BD),
+	arrowRight: String.fromCharCode(0x25BA),
+	todoInitialPlaceholderId: 'initial_Placeholder',
+	listCompressThreshold: 5,
 };

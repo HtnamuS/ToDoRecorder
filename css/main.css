@@ -269,6 +269,7 @@ textarea {
 	border-bottom: thin lightgray solid;
 }
 
+/*noinspection CssNoGenericFontName*/
 #newTodo__Input {
 	width: 94%;
 	font-size: 20px;
@@ -287,17 +288,18 @@ textarea {
 	display: inline-block;
 	width:30%;
 	margin: 0 2% 0 auto;
+	float: right;
 }
 
 #onAllActions__markAllAsCompleted{
 	display: inline-block;
-	width:30%;
+	width:47%;
 	margin: 0 2% 0 auto;
 }
 
 #onAllActions__clearAll{
 	display: inline-block;
-	width: 30%;
+	width: 47%;
 	margin: 0 auto 0 2%;
 }
 
@@ -363,7 +365,7 @@ textarea {
 .completedTasks__list__element__text{
 	word-break: break-all;
 	font-size: 20px;
-	color:gray;
+	color:lightgray;
 	text-decoration: line-through;
 	transition: 0.5s;
 	margin-left: 1%;
@@ -372,7 +374,7 @@ textarea {
 }
 
 .completedTasks__list__element__text:not(:focus):hover{
-	color: #555555;
+	color: black;
 	text-decoration: none;
 	transition: 0.5s;
 	.
@@ -407,9 +409,8 @@ textarea {
 }
 
 .over {
-	background-color: lightgray;
-	text-decoration: underline;
 	height: 10px;
+	padding: 15px 0 15px 0;
 
 }
 [contenteditable]:focus{
@@ -461,4 +462,29 @@ body{
 }
 .FocusElement .closeTaskButton{
 	opacity: 1;
+}
+
+
+.completedTasksListHead{
+	margin: 0;
+	text-align: left;
+	cursor: pointer;
+	user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	font-size: medium;
+	opacity: 0.4;
+	transition: 0.5s;
+	display: inline-block;
+}
+
+
+.compressed{
+	opacity: 0.7;
+	transition: 0.5s;
+}
+
+button{
+
 }
