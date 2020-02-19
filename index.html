@@ -1,36 +1,38 @@
 <!DOCTYPE html>
-<!--suppress HtmlFormInputWithoutLabel, CssNoGenericFontName -->
+<!--suppress HtmlFormInputWithoutLabel -->
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<title >todo Application</title>
 	<link rel="stylesheet" href="css/main.css">
 </head>
-<body style="font-family: AppleGothic; font-size: small">
 
-<h1 style = 'text-align: center'>ToDo Recorder</h1>
+<body>
 
-<div id="onAllActions">
-	<button id="onAllActions__markAllAsCompleted"> Mark All as Completed</button>
-	<button id ="onAllActions__clearAll">Clear All</button>
+<h1 class="pageTitle">ToDo Recorder</h1>
+
+<div nodeID="actionsOnAllDivision" class="actionsOnAllDivision">
+	<button class="markAllCompletedButton" nodeID="markAllCompletedButton"> Mark All as Completed</button>
+	<button class ="clearAllButton" nodeID="clearAllButton">Clear All</button>
 </div>
-<div id="todoTasks">
-	<p id="todoTasks__noTasksMessage" style="opacity: 0;">No ToDo Tasks</p>
-	<ul id="todoTasks__list"><li class="list__placeHolder" id = "initial_Placeholder"></li><li id="newTodo">
-		<span id = "newListItemPlus">&#43;</span>
-		<input type="text" id="newTodo__Input" autocomplete="off" placeholder="Add todo..." autofocus="autofocus">
+<div nodeID="todoTasksDivision" class="todoTasksDivision">
+	<p class="noTodoTasksMessage" nodeID="noTodoTaskMessage">No ToDo Tasks</p>
+	<ul class="todoList taskList" nodeID="todoList"><li class="listPlaceHolderElement initialPlaceholder"></li><li class="newTodoListElement" nodeID="newTodoListElement">
+		<span class = "newTodoPlusSymbol" nodeID="newTodoPlusSymbol">&#43;</span>
+		<input type="text" class="newTodoInputField" nodeID="newTodoInputField" autocomplete="off" placeholder="Add todo..." autofocus="autofocus">
 	</li></ul>
 </div>
 
-<div id="completedTasks">
-	<div>
-		<p class = "completedTasksListHead">&#x25BD Completed Tasks</p>
-		<button id="onAllActions__markAllAsTodo"> Mark All ToDo</button>
+<div class="completedTasksDivision" nodeID="completedTasksDivision">
+	<div class="completedActionsDivision">
+		<p class = "completedTasksListHead" nodeID="completedTasksListHead">&#x25BD Completed Tasks</p>
+		<button class="markAllAsTodoButton" nodeID="markAllAsTodoButton"> Mark All ToDo</button>
 	</div>
-	<ul id="completedTasks__list"><li class="list__placeHolder"></li></ul>
-	<p id="completedTasks__noTasksMessage" style="opacity: 0;">No Completed Tasks</p>
+	<ul class="completedList taskList" nodeID="completedList"><li class="listPlaceHolderElement"></li></ul>
+	<p class="noCompletedTasksMessage" nodeID="noCompletedTasksMessage">No Completed Tasks</p>
 </div>
 <script src="js/utils.js"></script>
+
 <script src='js/main.js'></script>
 </body>
 </html>
