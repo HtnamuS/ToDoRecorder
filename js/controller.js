@@ -1,6 +1,6 @@
 "use strict";
 
-(function todoRecorderController() {
+function TodoRecorderController() {
 	function loadInitData(){
 		let initData = todoRecorderModel.getData();
 		todoRecorderModel.clearData();
@@ -227,4 +227,4 @@
 		todoRecorderView.completedTasksListView.deactivateMarkAllTodoButton();
 		loadInitData();
 	})();
-})();
+};

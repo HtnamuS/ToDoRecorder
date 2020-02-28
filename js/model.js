@@ -1,7 +1,28 @@
 "use strict";
+const model = {
+	init : function () {   },
 
+};
 
-let todoRecorderModel = (function () {
+function TaskModel(taskText) {
+	let taskData = {
+		text: taskText,
+	};
+	this.updateText = function(newText){
+		taskData.text = newText;
+		todoRecorderModel.commitData();
+	};
+	this.getText = function(){
+		return taskData.text;
+	};
+	this.getTaskData = function(){
+		return taskData;
+	};
+	return this;
+}
+
+let TodoRecorderModel = function () {
+
 	let todoRecorderData = JSON.parse(localStorage.getItem("todoRecorderData"))||{
 		todoTasksData:[],
 		completedTasksData: []
@@ -43,49 +64,19 @@ let todoRecorderModel = (function () {
 		};
 		return tasksModelObj;
 	})();
-	function Task(taskText) {
-		let taskData = {
-			text: taskText,
-		};
-		this.updateText = function(newText){
-			taskData.text = newText;
-			todoRecorderModel.commitData();
-		};
-		this.getText = function(){
-			return taskData.text;
-		};
-		this.getTaskData = function(){
-			return taskData;
-		};
-		return this;
-	}
 
-	let todoRecorderModelObj = {
-		todoTasksListModel : (function () {
-			let todoTasksListModelObj = Object.create(taskListModel);
-			todoTasksListModelObj.tasksDataList = todoRecorderData.todoTasksData;
-			todoTasksListModelObj.taskModelCollection = [];
-			return todoTasksListModelObj;
-		})(),
-		completedTasksListModel : (function () {
-			let completedTasksModelObj = Object.create(taskListModel);
-			completedTasksModelObj.tasksDataList = todoRecorderData.completedTasksData;
-			completedTasksModelObj.taskModelCollection = [];
-			return completedTasksModelObj;
-		})(),
-	};
-	todoRecorderModelObj.commitData = function(){
+	this.commitData = function(){
 		localStorage.todoRecorderData = JSON.stringify(todoRecorderData);
 	};
-	todoRecorderModelObj.getData = function(){
+	this.getData = function(){
 		return {
 			todoTasksData: todoRecorderData.todoTasksData.slice(),
 			completedTasksData: todoRecorderData.completedTasksData.slice()
 		};
 	};
-	todoRecorderModelObj.clearData = function(){
+	this.clearData = function(){
 		todoRecorderData.todoTasksData.splice(0,todoRecorderData.todoTasksData.length);
 		todoRecorderData.completedTasksData.splice(0,todoRecorderData.completedTasksData.length);
 	};
-	return todoRecorderModelObj;
-})();
+};
+TodoRecorderModel.prototype = model;
