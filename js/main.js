@@ -367,6 +367,9 @@
 			let placeHolder = createPlaceHolder();
 			todoList.insertBefore(placeHolder, todoList.getElementsByTagName('li')[todoList.getElementsByTagName('li').length - 2]);
 			todoList.insertBefore(newTodoNode, todoList.getElementsByTagName('li')[todoList.getElementsByTagName('li').length - 2]);
+			makeTaskTextElementContentEditable(newTodoText);
+			focusOnTaskTextElement(newTodoText);
+			utils.setEndOfContentEditable(newTodoText);
 			makeElementDraggable(newTodoNode);
 			return {newTodoNode, newTodoText};
 		};
