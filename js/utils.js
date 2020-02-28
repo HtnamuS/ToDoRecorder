@@ -23,6 +23,8 @@ Object.defineProperty(HTMLElement.prototype,'nodeId',{
 let utils = {
 	todoConstant:"todo",
 	completedConstant:"completed",
+	transferFlag: "transfer",
+	newFlag: "new",
 	actionsOnAllDivisionNodeID: "actionsOnAllDivision",
 		markAllCompletedButtonNodeID: "markAllCompletedButton",
 		clearAllButtonNodeID: "clearAllButton",
