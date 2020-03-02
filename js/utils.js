@@ -1,51 +1,67 @@
 "use strict";
 
-Object.getPrototypeOf(document).getElementByNodeId = function(nodeId){
-	let elements = this.querySelectorAll(`[nodeID=${nodeId}]`);
-	if(elements.length > 1){
-		throw{
-			name:"Multiple Elements with same nodeId",
-			message: `${elements[0]}, ${elements[1]} etc. have same nodeId`,
-		}
-	}
-	return elements[0];
-};
-
-Object.defineProperty(HTMLElement.prototype,'nodeId',{
-	get() {
-		return this.getAttribute('nodeId');
-	},
-	set(newNodeId){
-		this.setAttribute('nodeId', newNodeId);
-	}
-});
-
 let utils = {
+	getActionBarHTML: function(actionBarType){
+		if(actionBarType === utils.todoConstant){
+			return '<div class="todoActionBar">\n' +
+				'\t\t<span class = "todoTasksListHead tasksListHead" >&#x25BD Todo Tasks</span>\n' +
+				'\t\t<span class="noTodoTasksMessage" >No ToDo Tasks</span>\n' +
+				'\t\t<button class="markAllAsCompletedButton" >Mark All Completed</button>\n' +
+				'\t\t<button class="clearAllTodoButton">Clear All</button>\n' +
+				'\t</div>';
+		}
+		else if(actionBarType === utils.completedConstant){
+			return '<div class="completedActionBar">\n' +
+				'\t\t<span class = "completedTasksListHead tasksListHead" >&#x25BD Completed Tasks</span>\n' +
+				'\t\t<span class="noCompletedTasksMessage" >No Completed Tasks</span>\n' +
+				'\t\t<button class="markAllAsTodoButton" > Mark All ToDo</button>\n' +
+				'\t\t<button class="clearAllCompletedButton">Clear All</button>\n' +
+				'\t</div>';
+		}
+		else{
+			throw{
+				name:"Unknown Element Type",
+				message:"No element of " + actionBarType + " type can be created"
+			}
+		}
+	},
+	getTodoInputHTML: function(){
+		return '<span class = "newTodoPlusSymbol" >&#43;</span>\n' +
+			'\t<input type="text" class="newTodoInputField"  autocomplete="off" placeholder="Add todo..." autofocus="autofocus">';
+	},
 	todoConstant:"todo",
 	completedConstant:"completed",
 	transferFlag: "transfer",
 	newFlag: "new",
-	actionsOnAllDivisionNodeID: "actionsOnAllDivision",
-		markAllCompletedButtonNodeID: "markAllCompletedButton",
-		clearAllButtonNodeID: "clearAllButton",
+	emptyFlag: 'empty',
+	nonEmptyFlag:'non-empty',
 
+	todoRecordersDivisionClassName: "ToDoRecorders",
 	taskListClassName: 'taskList',
-	todoTasksDivisionNodeID: "todoTasksDivision",
-		noTodoTasksMessageNodeID: 'noTodoTaskMessage',
-		todoListNodeID: 'todoList',
+	tasksListHead: 'tasksListHead',
+	todoTasksDivisionClassName: "todoTasksDivision",
+		todoActionBarClassName: "todoActionBar",
+			todoTasksListHeadClassName : "todoTasksListHead",
+			noTodoTasksMessageClassName: 'noTodoTasksMessage',
+			markAllAsCompletedButtonClassName : 'markAllAsCompletedButton',
+			clearAllTodoButtonClassName: 'clearAllTodoButton',
+		todoListClassName: 'todoList',
 			todoTaskTextClass: 'todoListElementText',
 			todoTaskTextHoverClassName: 'todoListElementTextHover',
-		newTodoListElementNodeId: 'newTodoListElement',
-		newTodoInputFieldNodeId: 'newTodoInputField',
+	newTodoInputDivisionClassName: 'newTodoInput',
+		newTodoInputFieldClassName: 'newTodoInputField',
 
 
-	completedTasksDivisionNodeId: 'completedTasksDivision',
-		completedTasksListHeadNodeId: "completedTasksListHead",
-		markAllTodoButtonNodeID: "markAllAsTodoButton",
-		completedListNodeId: 'completedList',
+	completedTasksDivisionClassName: 'completedTasksDivision',
+		completedActionBarClassName: "completedActionBar",
+			completedTasksListHeadClassName: "completedTasksListHead",
+			noCompletedTasksMessageClassName: 'noCompletedTasksMessage',
+			markAllTodoButtonClassName: "markAllAsTodoButton",
+			clearAllCompletedClassName: 'clearAllCompletedButton',
+		completedListClassName: 'completedList',
 			completedTaskTextClass: 'completedListElementText',
 			completedTaskTextHoverClassName: 'completedListElementTextHover',
-		noCompletedTasksMessageNodeId: 'noCompletedTasksMessage',
+		
 	compressedListClass: "compressed",
 
 	//For both Lists

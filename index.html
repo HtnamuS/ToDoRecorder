@@ -10,27 +10,7 @@
 <body>
 
 <h1 class="pageTitle">ToDo Recorder</h1>
-
-<div nodeID="actionsOnAllDivision" class="actionsOnAllDivision">
-	<button class="markAllCompletedButton" nodeID="markAllCompletedButton"> Mark All Completed</button>
-	<button class ="clearAllButton" nodeID="clearAllButton">Clear All</button>
-</div>
-<div nodeID="todoTasksDivision" class="todoTasksDivision">
-	<p class="noTodoTasksMessage" nodeID="noTodoTaskMessage">No ToDo Tasks</p>
-	<ul class="todoList taskList" nodeID="todoList"><li class="listPlaceHolderElement initialPlaceholder"></li><li class="newTodoListElement" nodeID="newTodoListElement">
-		<span class = "newTodoPlusSymbol" nodeID="newTodoPlusSymbol">&#43;</span>
-		<input type="text" class="newTodoInputField" nodeID="newTodoInputField" autocomplete="off" placeholder="Add todo..." autofocus="autofocus">
-	</li></ul>
-</div>
-
-<div class="completedTasksDivision" nodeID="completedTasksDivision">
-	<div class="completedActionsDivision">
-		<p class = "completedTasksListHead" nodeID="completedTasksListHead">&#x25BD Completed Tasks</p>
-		<button class="markAllAsTodoButton" nodeID="markAllAsTodoButton"> Mark All ToDo</button>
-	</div>
-	<ul class="completedList taskList" nodeID="completedList"><li class="listPlaceHolderElement"></li></ul>
-	<p class="noCompletedTasksMessage" nodeID="noCompletedTasksMessage">No Completed Tasks</p>
-</div>
+<div class = "ToDoRecorders"></div>
 <script src="js/utils.js"></script>
 <script src="js/model.js"></script>
 <script src="js/view.js"></script>

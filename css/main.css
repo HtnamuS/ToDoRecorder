@@ -8,38 +8,60 @@ body{
 .pageTitle{
 	text-align: center;
 }
-.actionsOnAllDivision{
-	width : 40%;
-	margin: 2% auto 3%;
-}
-
-.markAllCompletedButton{
-	display: inline-block;
-	width:47%;
-	margin: 0 2% 0 auto;
-}
-
-.clearAllButton{
-	display: inline-block;
-	width: 47%;
-	margin: 0 auto 0 2%;
-}
 
 .todoTasksDivision{
 	width: 75%;
 	margin: 0 auto;
 }
 
+.todoActionBar{
+	min-width: 250px;
+	padding-bottom: 6px;
+}
+.tasksListHead{
+	float: left;
+	cursor: pointer;
+	user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	font-size: medium;
+	opacity: 0.4;
+	transition: 0.5s;
+	width: 25%;
+	display: inline-block;
+}
+
+.todoTasksListHead{
+	display: inline-block;
+}
+
 
 .noTodoTasksMessage{
 	color: lightgray;
 	text-align: center;
+	width: 20%;
+	margin: 0 0 0 0 ;
+	display: inline-block;
 }
 
 
-.todoList{
+.markAllAsCompletedButton{
+	float: right;
+	display: inline-block;
+	width: 20%;
+}
+.clearAllTodoButton{
+	float: right;
+	display: inline-block;
+	width: 20%;
+}
+
+
+.taskList{
 	list-style: none;
 	padding-inline-start: 0;
+	margin-bottom: 0;
 }
 
 .todoListElementText{
@@ -59,10 +81,11 @@ body{
 	transition: 0.5s;
 }
 
-.newTodoListElement{
+.newTodoInput{
 	/*text-align: center;*/
 	padding-inline-start: 0;
-	margin-left: 1%;
+	width: 75%;
+	margin: 0 auto 2%;
 	border-bottom: thin lightgray solid;
 }
 
@@ -70,7 +93,7 @@ body{
 	font-size: large;
 	color: darkgray;
 	margin-left: 0.5%;
-	margin-right: 0.5%;
+	margin-right: 1.6%;
 }
 
 /*noinspection CssNoGenericFontName*/
@@ -92,30 +115,16 @@ body{
 	padding-bottom: 1%;
 }
 
-.completedTasksListHead{
-	margin: 0;
-	float: left;
-	cursor: pointer;
-	user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	-webkit-user-select: none;
-	font-size: medium;
-	opacity: 0.4;
-	transition: 0.5s;
-	display: inline-block;
-}
-
 .markAllAsTodoButton{
-	display: inline-block;
-	width:30%;
-	margin: 0 2% 0 auto;
 	float: right;
+	display: inline-block;
+	width: 20%;
 }
 
-.completedList{
-	list-style: none;
-	padding-inline-start: 0;
+.clearAllCompletedButton{
+	float: right;
+	display: inline-block;
+	width: 20%;
 }
 
 .completedListElementText{
@@ -140,6 +149,9 @@ body{
 .noCompletedTasksMessage{
 	color: lightgray;
 	text-align: center;
+	margin: 0 0 0 0 ;
+	width: 20%;
+	display: inline-block;
 }
 
 .compressed{

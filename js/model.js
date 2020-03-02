@@ -4,7 +4,7 @@ function TaskData(taskText) {
 	this.text = taskText;
 }
 
-let TodoRecorderModel = function () {
+let TodoRecorderModel = function (id) {
 	let todoRecorderData;
 	
 	function saveData(){
