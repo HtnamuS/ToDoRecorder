@@ -8,15 +8,11 @@ const view = {
 function ActionBarView() {
 	let markAllCompletedButton = document.getElementByNodeId(utils.markAllCompletedButtonNodeID);
 	let clearAllButton = document.getElementByNodeId(utils.clearAllButtonNodeID);
-	this.init = function () {
+	this.init = function (callbacks) {
 		markAllCompletedButton.disabled = true;
 		clearAllButton.disabled = true;
-	};
-	this.bindHandlerToMarkAllCompletedButton = function (handler) {
-		markAllCompletedButton.onclick = handler;
-	};
-	this.bindHandlerToClearAllButton = function (handler) {
-		clearAllButton.onclick = handler;
+		markAllCompletedButton.onclick = callbacks.markAllCompletedHandler;
+		clearAllButton.onclick = callbacks.clearAllHandler;
 	};
 	this.deactivateClearAllButton = function () {
 		clearAllButton.disabled = true;
@@ -40,6 +36,30 @@ function TasksListView() {
 	this.init = function (callbacks) {
 		this.taskElementViewCollection = [];
 		todoRecorderViewCallbacks = callbacks;
+		this.elementHandlers = {
+			taskTextUpdatedHandler: function (taskIndex, taskType, newText) {
+				todoRecorderViewCallbacks.taskTextUpdatedHandler(taskIndex, taskType, newText);
+			}.bind(this),
+			removeTask: this.removeTask.bind(this),
+		};
+	};
+	this.removeAll = function () {
+		let tasksData = [];
+		for(let taskElementView of this.taskElementViewCollection){
+			let taskDomElements = taskElementView.getDomElements();
+			let taskData = {
+				text: taskElementView.getTaskText(),
+			};
+			this.tasksList.removeChild(taskDomElements.taskNode);
+			this.tasksList.removeChild(taskDomElements.placeHolder);
+			tasksData.push(taskData);
+		}
+		this.taskElementViewCollection.splice(0,this.taskElementViewCollection.length);
+		if (this.checkIfEmpty()) {
+			this.noTasksMessage.style.opacity = '1';
+		}
+		todoRecorderViewCallbacks.updateButtonActiveness();
+		return tasksData;
 	};
 	this.checkIfEmpty = function () {
 		let numberOfTasks = this.tasksList.getElementsByClassName(utils.taskListElementClass).length;
@@ -49,7 +69,8 @@ function TasksListView() {
 		}
 		return false;
 	};
-	this.removeTask = function (taskDomElements) {
+	this.removeTask = function (taskDomElements, taskIndex,taskType) {
+		todoRecorderViewCallbacks.removeTaskFromModel(taskIndex,taskType);
 		this.tasksList.removeChild(taskDomElements.taskNode);
 		this.tasksList.removeChild(taskDomElements.placeHolder);
 		if (this.checkIfEmpty()) {
@@ -64,8 +85,12 @@ TasksListView.prototype = view;
 function TodoTasksListView() {
 	let todoRecorderViewCallbacks;
 	
-	let todoElementHandlers = {
-		addElementToList: function (taskDomElements) {
+	this.init = function (savedTodoTasks, callbacks) {
+		Object.getPrototypeOf(this).init.call(this, callbacks);
+		this.tasksList = document.getElementByNodeId(utils.todoListNodeID);
+		this.noTasksMessage = document.getElementByNodeId(utils.noTodoTasksMessageNodeID);
+		todoRecorderViewCallbacks = callbacks;
+		this.elementHandlers.addElementToList = function (taskDomElements) {
 			let listChildNodes = this.tasksList.getElementsByTagName('li');
 			let targetIndex = listChildNodes.length - 2;
 			
@@ -73,67 +98,89 @@ function TodoTasksListView() {
 			this.tasksList.insertBefore(taskDomElements.placeHolder, taskDomElements.taskNode);
 			this.noTasksMessage.style.opacity = '0';
 			todoRecorderViewCallbacks.updateButtonActiveness();
-		}.bind(this),
-		taskTextUpdatedHandler: function () {
-			todoRecorderViewCallbacks.taskTextUpdatedHandler();
-		}.bind(this),
-		removeTask: this.removeTask.bind(this),
-		markAsCompleted: function (taskDomElements, taskText) {
+		}.bind(this);
+		this.elementHandlers.markAsCompleted = function (taskDomElements, taskIndex, taskText) {
 			todoRecorderViewCallbacks.createCompletedTask(taskText);
-			this.removeTask.call(this, taskDomElements);
-		}.bind(this),
+			this.removeTask(taskDomElements,taskIndex ,utils.todoConstant);
+		}.bind(this);
+		for(let todoTask of savedTodoTasks){
+			let savedTaskElementView = new TodoTaskElementView();
+			savedTaskElementView.init(todoTask.text, this.elementHandlers);
+			this.taskElementViewCollection.push(savedTaskElementView);
+		}
 	};
-	this.init = function (callbacks) {
-		Object.getPrototypeOf(this).init.call(this, callbacks);
-		this.tasksList = document.getElementByNodeId(utils.todoListNodeID);
-		this.noTasksMessage = document.getElementByNodeId(utils.noTodoTasksMessageNodeID);
-		todoRecorderViewCallbacks = callbacks;
+	this.render = function () {
+		for(let taskElementView of this.taskElementViewCollection){
+			taskElementView.render();
+		}
 	};
-	this.createTodoTaskElement = function (todoText, flag) {
+	this.createAndRenderTodoTaskElement = function (todoText, flag) {
 		let newTaskElementView = new TodoTaskElementView();
 		
-		newTaskElementView.init(todoText, todoElementHandlers);
+		newTaskElementView.init(todoText, this.elementHandlers);
 		newTaskElementView.render();
 		if (flag === utils.newFlag) {
 			newTaskElementView.makeTaskTextContentEditableTrue();
 		}
 		this.taskElementViewCollection.push(newTaskElementView);
 	};
+	this.createAndRenderMultipleTodoTasks = function(todoTasks){
+		for(let todoTask of todoTasks){
+			let savedTaskElementView = new TodoTaskElementView();
+			savedTaskElementView.init(todoTask.text, this.elementHandlers);
+			this.taskElementViewCollection.push(savedTaskElementView);
+			savedTaskElementView.render();
+		}
+	}
 }
 
 function CompletedTasksListView() {
 	let todoRecorderViewCallbacks;
 	let markAllTodoButton;
-	let completedElementHandlers = {
-		addElementToList: function (taskDomElements) {
-			this.tasksList.appendChild(taskDomElements.placeHolder);
-			this.tasksList.appendChild(taskDomElements.taskNode);
-			this.noTasksMessage.style.opacity = '0';
-			todoRecorderViewCallbacks.updateButtonActiveness();
-		}.bind(this),
-		taskTextUpdatedHandler: function () {
-			todoRecorderViewCallbacks.taskTextUpdatedHandler();
-		}.bind(this),
-		removeTask: this.removeTask.bind(this),
-		markAsTodo: function (taskDomElements, taskText) {
-			todoRecorderViewCallbacks.createTodoTask(taskText);
-			this.removeTask.call(this, taskDomElements);
-		}.bind(this),
-	};
-	this.init = function (callbacks) {
+	
+	this.init = function (savedCompletedTasks, callbacks) {
 		Object.getPrototypeOf(this).init.call(this, callbacks);
 		this.tasksList = document.getElementByNodeId(utils.completedListNodeId);
 		this.noTasksMessage = document.getElementByNodeId(utils.noCompletedTasksMessageNodeId);
 		todoRecorderViewCallbacks = callbacks;
+		this.elementHandlers.addElementToList = function (taskDomElements) {
+			this.tasksList.appendChild(taskDomElements.placeHolder);
+			this.tasksList.appendChild(taskDomElements.taskNode);
+			this.noTasksMessage.style.opacity = '0';
+			todoRecorderViewCallbacks.updateButtonActiveness();
+		}.bind(this);
+		this.elementHandlers.markAsTodo = function (taskDomElements, taskIndex, taskText) {
+			todoRecorderViewCallbacks.createTodoTask(taskText);
+			this.removeTask(taskDomElements, taskIndex, utils.completedConstant);
+		}.bind(this);
 		markAllTodoButton = document.getElementByNodeId(utils.markAllTodoButtonNodeID);
+		markAllTodoButton.onclick = callbacks.markAllTodoHandler;
 		markAllTodoButton.disabled = true;
+		for(let completedTask of savedCompletedTasks){
+			let savedTaskElementView = new CompletedTaskElementView();
+			savedTaskElementView.init(completedTask.text, this.elementHandlers);
+			this.taskElementViewCollection.push(savedTaskElementView);
+		}
 	};
-	this.createCompletedTaskElement = function (todoText) {
+	this.render = function () {
+		for(let taskElementView of this.taskElementViewCollection){
+			taskElementView.render();
+		}
+	};
+	this.createAndRenderCompletedTaskElement = function (taskText) {
 		let newTaskElementView = new CompletedTaskElementView();
 		
-		newTaskElementView.init(todoText, completedElementHandlers);
+		newTaskElementView.init(taskText, this.elementHandlers);
 		newTaskElementView.render();
 		this.taskElementViewCollection.push(newTaskElementView);
+	};
+	this.createAndRenderMultipleCompletedTasks = function(completedTasks){
+		for(let completedTask of completedTasks){
+			let savedTaskElementView = new CompletedTaskElementView();
+			savedTaskElementView.init(completedTask.text, this.elementHandlers);
+			this.taskElementViewCollection.push(savedTaskElementView);
+			savedTaskElementView.render();
+		}
 	};
 	this.deactivateMarkAllTodoButton = function () {
 		markAllTodoButton.disabled = true;
@@ -175,11 +222,6 @@ function TaskElementView() {
 		return textNode;
 	}
 	
-	function getTaskText(taskNode) {
-		let textNode = getTextNode(taskNode);
-		return textNode.textContent;
-	}
-	
 	this.init = function () {
 		this.elementEventHandlers = {
 			onFocusOutHandler: function (event) {
@@ -189,7 +231,8 @@ function TaskElementView() {
 					this.elementEventHandlers.removeTask(event);
 				} else {
 					//Manage Model
-					this.taskListCallBacks.taskTextUpdatedHandler();
+					let taskIndex = this.getActualIndex();
+					this.taskListCallBacks.taskTextUpdatedHandler(taskIndex, this.elementType, taskTextSpan.textContent);
 				}
 			}.bind(this),
 			taskTextClickHandler: function (event) {
@@ -199,11 +242,11 @@ function TaskElementView() {
 						if (!this.prevent) {
 							if(this.elementType === utils.todoConstant){
 								let domElements = this.getDomElements();
-								this.taskListCallBacks.markAsCompleted(domElements, getTaskText(domElements.taskNode));
+								this.taskListCallBacks.markAsCompleted(domElements, this.getActualIndex(),this.getTaskText());
 							}
 							else if(this.elementType === utils.completedConstant){
 								let domElements = this.getDomElements();
-								this.taskListCallBacks.markAsTodo(domElements, getTaskText(domElements.taskNode));
+								this.taskListCallBacks.markAsTodo(domElements, this.getActualIndex(), this.getTaskText());
 							}
 							else{
 								throw{
@@ -241,7 +284,6 @@ function TaskElementView() {
 			taskTextSpan.addEventListener("focusout", elementViewCallbacks.onFocusOutHandler);
 			taskTextSpan.onkeydown = function (event) {
 				if (event.code === "Enter") {
-					// noinspection JSUnresolvedFunction
 					event.target.blur();
 				}
 			};
@@ -320,15 +362,20 @@ function TaskElementView() {
 		return this.taskElements;
 	};
 	this.getActualIndex = function () {
-	
+		let taskNode = this.getDomElements().taskNode;
+		let peerNodes = taskNode.closest(".taskList").getElementsByClassName(utils.taskListElementClass);
+		return Array.from(peerNodes).indexOf(taskNode);
 	};
-	
+	this.getTaskText = function() {
+		let taskNode = this.getDomElements().taskNode;
+		let textNode = getTextNode(taskNode);
+		return textNode.textContent;
+	};
 	this.render = function () {
 		this.taskListCallBacks.addElementToList(this.getDomElements());
 	};
 	this.delete = function () {
-		// Handle Model
-		this.taskListCallBacks.removeTask(this.getDomElements());
+		this.taskListCallBacks.removeTask(this.getDomElements(),this.getActualIndex(),this.elementType);
 	}
 }
 TaskElementView.prototype = view;
@@ -379,15 +426,55 @@ const TodoRecorderView = function (todoRecorderModel) {
 	let completedTasksListView = new CompletedTasksListView();
 	let todoInputFieldView = new TodoInputFieldView();
 	
+	let actionBarHandlers = {
+		markAllCompletedHandler: function () {
+			todoRecorderModel.deleteAllTodoTasks();
+			let todoTasksData = todoTasksListView.removeAll();
+			todoRecorderModel.addMultipleCompletedTasks(todoTasksData);
+			completedTasksListView.createAndRenderMultipleCompletedTasks(todoTasksData);
+		},
+		clearAllHandler: function () {
+			todoRecorderModel.deleteAllTodoTasks();
+			todoRecorderModel.deleteAllCompletedTasks();
+			todoTasksListView.removeAll();
+			completedTasksListView.removeAll();
+		}
+	};
 	let inputFieldHandlers = {
 		inputFieldTextEnterHandler: function (inputText) {
-			// todoRecorderModel TODO: Handle Model
-			todoTasksListView.createTodoTaskElement(inputText, utils.newFlag);
+			todoRecorderModel.addTodoTask(inputText);
+			todoTasksListView.createAndRenderTodoTaskElement(inputText, utils.newFlag);
 		},
 	};
 	let listHandlers = {
-		taskTextUpdatedHandler: function () {
+		taskTextUpdatedHandler: function (taskIndex, taskType, newText) {
+			if(taskType === utils.todoConstant){
+				todoRecorderModel.editTodoTask(taskIndex,newText);
+			}
+			else if(taskType === utils.completedConstant){
+				todoRecorderModel.editCompletedTask(taskIndex,newText);
+			}
+			else{
+				throw{
+					name: "ElementTypeResolutionError",
+					message: "No such element type",
+				}
+			}
 			todoInputFieldView.focus();
+		},
+		removeTaskFromModel: function(taskIndex, taskType){
+			if(taskType === utils.todoConstant){
+				todoRecorderModel.deleteTodoTask(taskIndex);
+			}
+			else if(taskType === utils.completedConstant){
+				todoRecorderModel.deleteCompletedTask(taskIndex);
+			}
+			else{
+				throw{
+					name: "ElementTypeResolutionError",
+					message: "No such element type",
+				}
+			}
 		},
 		updateButtonActiveness: function () {
 			let emptyCount = 0;
@@ -412,12 +499,20 @@ const TodoRecorderView = function (todoRecorderModel) {
 	};
 	let todoListHandlers = {
 		createCompletedTask: function (taskText) {
-			completedTasksListView.createCompletedTaskElement(taskText, utils.transferFlag);
+			todoRecorderModel.addCompletedTask(taskText);
+			completedTasksListView.createAndRenderCompletedTaskElement(taskText, utils.transferFlag);
 		}
 	};
 	let completedListHandlers = {
 		createTodoTask: function (taskText) {
-			todoTasksListView.createTodoTaskElement(taskText, utils.transferFlag);
+			todoRecorderModel.addTodoTask(taskText);
+			todoTasksListView.createAndRenderTodoTaskElement(taskText, utils.transferFlag);
+		},
+		markAllTodoHandler: function () {
+			todoRecorderModel.deleteAllCompletedTasks();
+			let completedTasksData = completedTasksListView.removeAll();
+			todoRecorderModel.addMultipleTodoTasks(completedTasksData);
+			todoTasksListView.createAndRenderMultipleTodoTasks(completedTasksData);
 		}
 	};
 	Object.setPrototypeOf(todoListHandlers, listHandlers);
@@ -425,10 +520,14 @@ const TodoRecorderView = function (todoRecorderModel) {
 	
 	
 	this.init = function () {
-		actionBarView.init();
-		todoTasksListView.init(todoListHandlers);
-		completedTasksListView.init(completedListHandlers);
+		actionBarView.init(actionBarHandlers);
+		todoTasksListView.init(todoRecorderModel.getSavedTodoTasksData(), todoListHandlers);
+		completedTasksListView.init(todoRecorderModel.getSavedCompletedTasksData(), completedListHandlers);
 		todoInputFieldView.init(inputFieldHandlers);
 	};
+	this.render = function () {
+		todoTasksListView.render();
+		completedTasksListView.render();
+	}
 };
 TodoRecorderView.prototype = view;
